@@ -1,3 +1,3 @@
 import { DatabaseType, IDBSchema } from "../types/types";
-declare const Database: <T extends object>(name: string, schemas: IDBSchema[]) => DatabaseType<T>;
+declare const Database: (name: string, schemas: IDBSchema[]) => DatabaseType;
 export default Database;

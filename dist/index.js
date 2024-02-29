@@ -46,75 +46,69 @@ const Database = (name, schemas) => {
     });
     const getStore = (storeName) => {
         return {
-            create: (data) => create(storeName, data),
-            getById: (id) => getById(storeName, id),
-            getAll: () => getAll(storeName),
-            delete: (id) => deleteRecord(storeName, id),
-            update: (id, data) => update(storeName, id, data),
-            getByField: (fieldName, fieldValue) => getByField(storeName, fieldName, fieldValue),
+            create: async (data) => {
+                const db = await dbOpener;
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([storeName], "readwrite");
+                    const store = transaction.objectStore(storeName);
+                    const request = store.add(data);
+                    request.onsuccess = () => resolve({ id: +request.result, ...data });
+                    request.onerror = (event) => reject(event.target?.error);
+                });
+            },
+            getById: async (id) => {
+                const db = await dbOpener;
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([storeName]);
+                    const store = transaction.objectStore(storeName);
+                    const request = store.get(id);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => reject(event.target?.error);
+                });
+            },
+            getAll: async () => {
+                const db = await dbOpener;
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([storeName]);
+                    const store = transaction.objectStore(storeName);
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => reject(event.target?.error);
+                });
+            },
+            delete: async (id) => {
+                const db = await dbOpener;
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([storeName], "readwrite");
+                    const store = transaction.objectStore(storeName);
+                    const request = store.delete(id);
+                    request.onsuccess = () => resolve();
+                    request.onerror = (event) => reject(event.target?.error);
+                });
+            },
+            update: async (id, data) => {
+                const db = await dbOpener;
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([storeName], "readwrite");
+                    const store = transaction.objectStore(storeName);
+                    const updated = { ...data, id };
+                    const request = store.put(updated);
+                    request.onsuccess = () => resolve(updated);
+                    request.onerror = (event) => reject(event.target?.error);
+                });
+            },
+            getByField: async (fieldName, fieldValue) => {
+                const db = await dbOpener;
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([storeName]);
+                    const store = transaction.objectStore(storeName);
+                    const index = store.index(fieldName);
+                    const request = index.getAll(fieldValue);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => reject(event.target?.error);
+                });
+            },
         };
-    };
-    const create = async (storeName, data) => {
-        const db = await dbOpener;
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([storeName], "readwrite");
-            const store = transaction.objectStore(storeName);
-            const request = store.add(data);
-            request.onsuccess = () => resolve({ id: +request.result, ...data });
-            request.onerror = (event) => reject(event.target?.error);
-        });
-    };
-    const getById = async (storeName, id) => {
-        const db = await dbOpener;
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([storeName]);
-            const store = transaction.objectStore(storeName);
-            const request = store.get(id);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = (event) => reject(event.target?.error);
-        });
-    };
-    const getAll = async (storeName) => {
-        const db = await dbOpener;
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([storeName]);
-            const store = transaction.objectStore(storeName);
-            const request = store.getAll();
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = (event) => reject(event.target?.error);
-        });
-    };
-    const deleteRecord = async (storeName, id) => {
-        const db = await dbOpener;
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([storeName], "readwrite");
-            const store = transaction.objectStore(storeName);
-            const request = store.delete(id);
-            request.onsuccess = () => resolve();
-            request.onerror = (event) => reject(event.target?.error);
-        });
-    };
-    const update = async (storeName, id, data) => {
-        const db = await dbOpener;
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([storeName], "readwrite");
-            const store = transaction.objectStore(storeName);
-            const updated = { ...data, id };
-            const request = store.put(updated);
-            request.onsuccess = () => resolve(updated);
-            request.onerror = (event) => reject(event.target?.error);
-        });
-    };
-    const getByField = async (storeName, fieldName, fieldValue) => {
-        const db = await dbOpener;
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([storeName]);
-            const store = transaction.objectStore(storeName);
-            const index = store.index(fieldName);
-            const request = index.getAll(fieldValue);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = (event) => reject(event.target?.error);
-        });
     };
     return {
         getStore,
