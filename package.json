@@ -12,5 +12,5 @@
   "devDependencies": {
     "typescript": "^5.3.3"
   },
-  "types": "src/types.d.ts"
+  "types": "dist/index.d.ts"
 }
