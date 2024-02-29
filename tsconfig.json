@@ -19,6 +19,6 @@
     "declaration": true, // Generate corresponding '.d.ts' file
     "sourceMap": true // Generate source map files for debugging
   },
-  "include": ["./src/**/*"], // Include all files in the src directory
+  "include": ["./src/**/*", "types"], // Include all files in the src directory
   "exclude": ["node_modules", "dist"] // Exclude node_modules and dist directories from the compilation
 }

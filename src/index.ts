@@ -1,4 +1,4 @@
-import { DatabaseType, Field, IDBSchema } from "./types/types";
+import { DatabaseType, Field, IDBSchema } from "../types/types";
 
 const Database = <T extends object>(
   name: string,
