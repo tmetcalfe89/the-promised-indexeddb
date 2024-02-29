@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es2020", // Modern ECMAScript features for IndexedDB
+    "module": "esnext", // Use ES modules
+    "lib": ["dom", "es2020"], // Include DOM for IndexedDB and ES2020 features
+    "strict": true, // Enable all strict type-checking options
+    "esModuleInterop": true, // Enables importing CommonJS modules in ES Module-syntax
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Ensure case sensitivity in imports
+    "moduleResolution": "node", // Use Node.js-style module resolution
+    "resolveJsonModule": true, // Allow importing JSON files
+    "outDir": "./dist", // Output directory for the compiled files
+    "baseUrl": "./", // Base directory to resolve non-absolute module names
+    "paths": {
+      "*": ["types/*"] // Resolve imports from the types folder
+    },
+    "allowJs": true, // Allow JavaScript files to be compiled
+    "checkJs": false, // Disable type checking of JavaScript files (if you have any JS files)
+    "declaration": true, // Generate corresponding '.d.ts' file
+    "sourceMap": true // Generate source map files for debugging
+  },
+  "include": ["./src/**/*"], // Include all files in the src directory
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and dist directories from the compilation
+}

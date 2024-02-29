@@ -1,0 +1,15 @@
+{
+  "name": "the-promised-indexeddb",
+  "version": "1.0.0",
+  "description": "Promisifies access to the browser's IndexedDB.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "keywords": [],
+  "author": "Timothy Metcalfe",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
