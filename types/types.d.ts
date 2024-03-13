@@ -18,6 +18,9 @@ export interface DatabaseStoreType<T extends object> {
     fieldName: string,
     fieldValue: IDBValidKey | IDBKeyRange | null | undefined
   ) => Promise<(T & { id: number })[]>;
+  getByFields: (
+    filter: Record<string, string>
+  ) => Promise<(T & { id: number })[]>;
 }
 
 export interface DatabaseType {

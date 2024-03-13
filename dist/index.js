@@ -33,7 +33,6 @@ const Database = (name, schemas) => {
                     .map(([v, f]) => [+v, f])
                     .filter(([v]) => v > oldVersion)
                     .sort(([a], [b]) => b - a)
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     .forEach(([_v, field]) => {
                     Object.entries(field).forEach(([key, { unique, index }]) => {
                         if (index) {
@@ -106,6 +105,39 @@ const Database = (name, schemas) => {
                     const request = index.getAll(fieldValue);
                     request.onsuccess = () => resolve(request.result);
                     request.onerror = (event) => reject(event.target?.error);
+                });
+            },
+            getByFields: async (filter) => {
+                const db = await dbOpener; // Assuming dbOpener is a promise that opens a connection to the database
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([storeName], "readonly");
+                    const store = transaction.objectStore(storeName);
+                    const request = store.openCursor();
+                    const filteredRecords = [];
+                    request.onsuccess = (event) => {
+                        const cursor = event.target?.result;
+                        if (cursor) {
+                            const record = cursor.value;
+                            let matchesFilter = true;
+                            for (const [fieldName, fieldValue] of Object.entries(filter)) {
+                                if (record[fieldName] !== fieldValue) {
+                                    matchesFilter = false;
+                                    break;
+                                }
+                            }
+                            if (matchesFilter) {
+                                filteredRecords.push(record);
+                            }
+                            cursor.continue(); // Move to the next record
+                        }
+                        else {
+                            // No more records, resolve the promise with the filtered records
+                            resolve(filteredRecords);
+                        }
+                    };
+                    request.onerror = (event) => {
+                        reject(event.target?.error); // Reject the promise if there's an error
+                    };
                 });
             },
         };
